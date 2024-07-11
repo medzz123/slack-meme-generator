@@ -99,6 +99,20 @@ app.post("/generate", async (req, res) => {
 
   const [template, ...caption] = text.split(" ");
 
+  if (template === 'help') {
+    const [images] = await bucket.getFiles();
+
+    return res.status(200).send(`
+    To generate a meme, use the following format:
+    /generate <image-name> <caption>
+    List of images are: 
+      ${images.map(file => file.name.replace('.png', '')).join('\n')}
+
+    To add another image, go to playter-meme-templates bucket and upload the image, image needs to be of format png.
+    `);
+  }
+
+
   const file = bucket.file(`${template}.png`);
 
   const [exists] = await file.exists();
